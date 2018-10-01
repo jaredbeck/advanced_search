@@ -1,39 +1,94 @@
 # Prototype
 
-Welcome to your new gem! In this directory, you'll find the files you need to be able to package up your Ruby library into a gem. Put your Ruby code in the file `lib/prototype`. To experiment with that code, run `bin/console` for an interactive prompt.
+Ruby database **query builder for search queries**. For example, library catalog,
+employee phonebook, non-aggregate reports.
 
-TODO: Delete this and the text above, and describe your gem
+- **Simple, not easy.** You'll have to write substantial code to get started, but
+  future changes will be simple.
+- Requires basic understanding of graph theory, must know what a tree is.
+- **Agnostic**: Support for specific databases and ORMs is provided via plugins.
+- **No dependencies**
+- Unit tests of your search objects do not need to touch database, so they
+  are very fast.
 
-## Installation
+## Example 1: Employee Phonebook
 
-Add this line to your application's Gemfile:
+Given a `Hash` of parameters from an HTTP form, build a search query.
 
 ```ruby
-gem 'prototype'
+# You write one of these classes for each search form in your application.
+# You write this class however you want to. This is one pattern I like.
+class PhonebookSearch
+  def initialize
+    # We will be building a tree, and the head node is an N-ary
+    # conjunction. Conjunction is the most common type of search. Disjunction
+    # is also common.
+    @head = ::Prototype::Nodes::And.new
+
+    # Later, we'll traverse that tree using a visitor that knows how to build
+    # a query for use with the mysql2 gem. Many other visitors are available.
+    # If you switch databases in the future, you only change the visitor, you
+    # don't change anything else in this class.
+    @visitor = ::Prototype::Visitors::Mysql2.new
+  end
+
+  # Example params:
+  #
+  # {
+  #   age_lt: 40,
+  #   ssn_eq: '123-45-6789'
+  # }
+  #
+  # You can organize your parameters, and name them, however you want. A Hash
+  # is common.
+  def search(params)
+    build_tree(params)
+    build_query
+  end
+
+  private
+
+  # Build a tree by dynamically `send`ing the parameter name. Given the params
+  # above, our tree will look like this:
+  #
+  #            and
+  #         /       \
+  #        lt        eq
+  #       /  \      /  \
+  #     age  40   ssn   '123-45-6789'
+  #
+  def build_tree(params)
+    params.each { |k, v| send(k, v) }
+  end
+
+  # You write one method like this for each filter on your search form. After
+  # this, our tree looks like:
+  #
+  #        and
+  #         |
+  #        lt
+  #       /  \
+  #     age  40
+  #
+  def age_lt(v)
+    eq = ::Prototype::Nodes::Lt.new
+    eq.add_edge(::Prototype::Nodes::Id.new(:age))
+    eq.add_edge(::Prototype::Nodes::Value.new(v))
+    @head.add_edge(eq)
+  end
+
+  def ssn_eq(v)
+    eq = ::Prototype::Nodes::Eq.new
+    eq.add_edge(::Prototype::Nodes::Id.new(:ssn))
+    eq.add_edge(::Prototype::Nodes::Value.new(v))
+    @head.add_edge(eq)
+  end
+
+  # Returns a query suitable for use with the mysql2 gem, because that's the
+  # visitor we selected above.
+  def build_query
+    @head.accept(@visitor)
+    @visitor.result
+  end
+end
 ```
-
-And then execute:
-
-    $ bundle
-
-Or install it yourself as:
-
-    $ gem install prototype
-
-## Usage
-
-TODO: Write usage instructions here
-
-## Development
-
-After checking out the repo, run `bin/setup` to install dependencies. Then, run `rake spec` to run the tests. You can also run `bin/console` for an interactive prompt that will allow you to experiment.
-
-To install this gem onto your local machine, run `bundle exec rake install`. To release a new version, update the version number in `version.rb`, and then run `bundle exec rake release`, which will create a git tag for the version, push git commits and tags, and push the `.gem` file to [rubygems.org](https://rubygems.org).
-
-## Contributing
-
-Bug reports and pull requests are welcome on GitHub at https://github.com/[USERNAME]/prototype. This project is intended to be a safe, welcoming space for collaboration, and contributors are expected to adhere to the [Contributor Covenant](http://contributor-covenant.org) code of conduct.
-
-## Code of Conduct
-
-Everyone interacting in the Prototype project’s codebases, issue trackers, chat rooms and mailing lists is expected to follow the [code of conduct](https://github.com/[USERNAME]/prototype/blob/master/CODE_OF_CONDUCT.md).
