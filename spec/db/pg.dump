@@ -1,0 +1,282 @@
+--
+-- PostgreSQL database dump
+--
+
+-- Dumped from database version 9.6.10
+-- Dumped by pg_dump version 9.6.10
+
+SET statement_timeout = 0;
+SET lock_timeout = 0;
+SET idle_in_transaction_session_timeout = 0;
+SET client_encoding = 'UTF8';
+SET standard_conforming_strings = on;
+SELECT pg_catalog.set_config('search_path', '', false);
+SET check_function_bodies = false;
+SET client_min_messages = warning;
+SET row_security = off;
+
+DROP DATABASE IF EXISTS advanced_search;
+--
+-- Name: advanced_search; Type: DATABASE; Schema: -; Owner: -
+--
+
+CREATE DATABASE advanced_search WITH TEMPLATE = template0 ENCODING = 'UTF8' LC_COLLATE = 'en_US.UTF-8' LC_CTYPE = 'en_US.UTF-8';
+
+
+\connect advanced_search
+
+SET statement_timeout = 0;
+SET lock_timeout = 0;
+SET idle_in_transaction_session_timeout = 0;
+SET client_encoding = 'UTF8';
+SET standard_conforming_strings = on;
+SELECT pg_catalog.set_config('search_path', '', false);
+SET check_function_bodies = false;
+SET client_min_messages = warning;
+SET row_security = off;
+
+--
+-- Name: plpgsql; Type: EXTENSION; Schema: -; Owner: -
+--
+
+CREATE EXTENSION IF NOT EXISTS plpgsql WITH SCHEMA pg_catalog;
+
+
+--
+-- Name: EXTENSION plpgsql; Type: COMMENT; Schema: -; Owner: -
+--
+
+COMMENT ON EXTENSION plpgsql IS 'PL/pgSQL procedural language';
+
+
+SET default_tablespace = '';
+
+SET default_with_oids = false;
+
+--
+-- Name: authors; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.authors (
+    id integer NOT NULL,
+    name character varying(200) NOT NULL,
+    birth_date date
+);
+
+
+--
+-- Name: authors_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE public.authors_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: authors_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE public.authors_id_seq OWNED BY public.authors.id;
+
+
+--
+-- Name: authorships; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.authorships (
+    id integer NOT NULL,
+    author_id integer NOT NULL,
+    book_id integer NOT NULL,
+    author_number smallint NOT NULL
+);
+
+
+--
+-- Name: authorships_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE public.authorships_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: authorships_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE public.authorships_id_seq OWNED BY public.authorships.id;
+
+
+--
+-- Name: books; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.books (
+    id integer NOT NULL,
+    isbn13 character varying(200) NOT NULL,
+    title character varying(200) NOT NULL,
+    publish_year integer
+);
+
+
+--
+-- Name: books_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE public.books_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: books_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE public.books_id_seq OWNED BY public.books.id;
+
+
+--
+-- Name: authors id; Type: DEFAULT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.authors ALTER COLUMN id SET DEFAULT nextval('public.authors_id_seq'::regclass);
+
+
+--
+-- Name: authorships id; Type: DEFAULT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.authorships ALTER COLUMN id SET DEFAULT nextval('public.authorships_id_seq'::regclass);
+
+
+--
+-- Name: books id; Type: DEFAULT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.books ALTER COLUMN id SET DEFAULT nextval('public.books_id_seq'::regclass);
+
+
+--
+-- Data for Name: authors; Type: TABLE DATA; Schema: public; Owner: -
+--
+
+COPY public.authors (id, name, birth_date) FROM stdin;
+1	Vernor Vinge	1944-10-02
+\.
+
+
+--
+-- Name: authors_id_seq; Type: SEQUENCE SET; Schema: public; Owner: -
+--
+
+SELECT pg_catalog.setval('public.authors_id_seq', 1, true);
+
+
+--
+-- Data for Name: authorships; Type: TABLE DATA; Schema: public; Owner: -
+--
+
+COPY public.authorships (id, author_id, book_id, author_number) FROM stdin;
+1	1	1	1
+\.
+
+
+--
+-- Name: authorships_id_seq; Type: SEQUENCE SET; Schema: public; Owner: -
+--
+
+SELECT pg_catalog.setval('public.authorships_id_seq', 1, true);
+
+
+--
+-- Data for Name: books; Type: TABLE DATA; Schema: public; Owner: -
+--
+
+COPY public.books (id, isbn13, title, publish_year) FROM stdin;
+1	0-312-85683-0	A Deepness in the Sky	1999
+\.
+
+
+--
+-- Name: books_id_seq; Type: SEQUENCE SET; Schema: public; Owner: -
+--
+
+SELECT pg_catalog.setval('public.books_id_seq', 1, true);
+
+
+--
+-- Name: authors authors_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.authors
+    ADD CONSTRAINT authors_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: authorships authorships_book_id_author_id_key; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.authorships
+    ADD CONSTRAINT authorships_book_id_author_id_key UNIQUE (book_id, author_id);
+
+
+--
+-- Name: authorships authorships_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.authorships
+    ADD CONSTRAINT authorships_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: books books_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.books
+    ADD CONSTRAINT books_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: authorships_book_id_author_number_idx; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE UNIQUE INDEX authorships_book_id_author_number_idx ON public.authorships USING btree (book_id, author_number);
+
+
+--
+-- Name: books_isbn13_idx; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE UNIQUE INDEX books_isbn13_idx ON public.books USING btree (isbn13);
+
+
+--
+-- Name: authorships authorships_author_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.authorships
+    ADD CONSTRAINT authorships_author_id_fkey FOREIGN KEY (author_id) REFERENCES public.authors(id) ON UPDATE CASCADE ON DELETE CASCADE;
+
+
+--
+-- Name: authorships authorships_book_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.authorships
+    ADD CONSTRAINT authorships_book_id_fkey FOREIGN KEY (book_id) REFERENCES public.books(id) ON UPDATE CASCADE ON DELETE CASCADE;
+
+
+--
+-- PostgreSQL database dump complete
+--
+

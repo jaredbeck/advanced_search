@@ -1,0 +1,3 @@
+#!/usr/bin/env ruby
+
+abort 'This project does not use rake. See eg. bin/test'
