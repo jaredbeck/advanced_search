@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    advanced_search (0.1.0)
+    advanced_search (0.0.1)
 
 GEM
   remote: https://rubygems.org/
@@ -26,8 +26,8 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
-  bundler (= 1.15.2)
   advanced_search!
+  bundler (= 1.15.2)
   rake (~> 10.0)
   rspec (~> 3.0)
 

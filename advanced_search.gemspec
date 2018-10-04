@@ -1,4 +1,3 @@
-
 lib = File.expand_path("../lib", __FILE__)
 $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
 require "advanced_search/version"
@@ -6,19 +5,11 @@ require "advanced_search/version"
 Gem::Specification.new do |spec|
   spec.name          = "advanced_search"
   spec.version       = AdvancedSearch::VERSION
+  spec.licenses = ['AGPL-3.0']
   spec.authors       = ["Jared Beck"]
   spec.email         = ["jared@jaredbeck.com"]
-  spec.summary       = "Advanced search"
-
-  # Prevent pushing this gem to RubyGems.org. To allow pushes either set the 'allowed_push_host'
-  # to allow pushing to a single host or delete this section to allow pushing to any host.
-  if spec.respond_to?(:metadata)
-    spec.metadata["allowed_push_host"] = "TODO: Set to 'http://mygemserver.com'"
-  else
-    raise "RubyGems 2.0 or newer is required to protect against " \
-      "public gem pushes."
-  end
-
+  spec.homepage = 'https://github.com/jaredbeck/advanced_search'
+  spec.summary       = "Database query builder for advanced search"
   spec.files         = `git ls-files -z`.split("\x0").reject do |f|
     f.match(%r{^(test|spec|features)/})
   end
