@@ -1,15 +1,14 @@
 
 lib = File.expand_path("../lib", __FILE__)
 $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
-require "prototype/version"
+require "advanced_search/version"
 
 Gem::Specification.new do |spec|
-  spec.name          = "prototype"
-  spec.version       = Prototype::VERSION
+  spec.name          = "advanced_search"
+  spec.version       = AdvancedSearch::VERSION
   spec.authors       = ["Jared Beck"]
   spec.email         = ["jared@jaredbeck.com"]
-
-  spec.summary       = "prototype"
+  spec.summary       = "Advanced search"
 
   # Prevent pushing this gem to RubyGems.org. To allow pushes either set the 'allowed_push_host'
   # to allow pushing to a single host or delete this section to allow pushing to any host.

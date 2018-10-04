@@ -1,5 +1,5 @@
 require "bundler/setup"
-require "prototype"
+require "advanced_search"
 
 RSpec.configure do |config|
   # Enable flags like --only-failures and --next-failure

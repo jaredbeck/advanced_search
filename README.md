@@ -1,10 +1,10 @@
-# Prototype
+# AdvancedSearch
 
-Ruby database **query builder for search queries**. For example, library catalog,
-employee phonebook, non-aggregate reports.
+Ruby database **query builder** for advanced search. For example, library
+catalog, employee phonebook, non-aggregate reports.
 
-- **Simple, not easy.** You'll have to write substantial code to get started, but
-  future changes will be simple.
+- **Simple, not easy.** You'll have to write substantial code to get started,
+  but future changes will be simple.
 - Requires basic understanding of graph theory, must know what a tree is.
 - **Agnostic**: Support for specific databases and ORMs is provided via plugins.
 - **No dependencies**
@@ -23,13 +23,13 @@ class PhonebookSearch
     # We will be building a tree, and the head node is an N-ary
     # conjunction. Conjunction is the most common type of search. Disjunction
     # is also common.
-    @head = ::Prototype::Nodes::And.new
+    @head = ::AdvancedSearch::Nodes::And.new
 
     # Later, we'll traverse that tree using a visitor that knows how to build
     # a query for use with the mysql2 gem. Many other visitors are available.
     # If you switch databases in the future, you only change the visitor, you
     # don't change anything else in this class.
-    @visitor = ::Prototype::Visitors::Mysql2.new
+    @visitor = ::AdvancedSearch::Visitors::Mysql2.new
   end
 
   # Example params:
@@ -71,16 +71,16 @@ class PhonebookSearch
   #     age  40
   #
   def age_lt(v)
-    eq = ::Prototype::Nodes::Lt.new
-    eq.add_edge(::Prototype::Nodes::Id.new(:age))
-    eq.add_edge(::Prototype::Nodes::Value.new(v))
+    eq = ::AdvancedSearch::Nodes::Lt.new
+    eq.add_edge(::AdvancedSearch::Nodes::Id.new(:age))
+    eq.add_edge(::AdvancedSearch::Nodes::Value.new(v))
     @head.add_edge(eq)
   end
 
   def ssn_eq(v)
-    eq = ::Prototype::Nodes::Eq.new
-    eq.add_edge(::Prototype::Nodes::Id.new(:ssn))
-    eq.add_edge(::Prototype::Nodes::Value.new(v))
+    eq = ::AdvancedSearch::Nodes::Eq.new
+    eq.add_edge(::AdvancedSearch::Nodes::Id.new(:ssn))
+    eq.add_edge(::AdvancedSearch::Nodes::Value.new(v))
     @head.add_edge(eq)
   end
 

@@ -1,11 +1,11 @@
 # bin/console
-# irb(main):001:0> Prototype::Junctive::Client.new(:or).perform(age_lt: 40, ssn_eq: '123-45-6789')
+# irb(main):001:0> AdvancedSearch::Junctive::Client.new(:or).perform(age_lt: 40, ssn_eq: '123-45-6789')
 #          InsecureSql -> age < 40 or ssn = 123-45-6789
 #             BoundSql -> ["age < $1 or ssn = $2", [40, "123-45-6789"]]
 #            BananaSql -> 🍌 < 🍌 or 🍌 = 🍌
 # => nil
 
-module Prototype
+module AdvancedSearch
   module Junctive
     module Nodes
       class Base
