@@ -6,11 +6,12 @@ module AdvancedSearch
       RSpec.describe Executor do
         describe '#execute' do
           it 'returns expected data' do
-            ast = AST::And.new
-            eq = AST::Eq.new
-            eq.add_edge(AST::Id.new(:name))
-            eq.add_edge(AST::Value.new('Vernor Vinge'))
-            ast.add_edge(eq)
+            ast = s(:and,
+              s(:eq,
+                s(:id, :name),
+                s(:value, 'Vernor Vinge')
+              )
+            )
             connection = ::PG::Connection.open(dbname: 'advanced_search')
             executor = described_class.new(
               'select name, birth_date from authors',

@@ -32,46 +32,54 @@ catalog, employee phonebook, non-aggregate reports.
 ```ruby
 # You write this class however you want to. This is one pattern I like.
 class PhonebookSearch
-  def initialize
-    # We will build a tree whose head node is an N-ary conjunction.
-    @head = ::AdvancedSearch::AST::And.new
-  end
+  include ::AdvancedSearch::SExp::S
+  FILTERS = %w[age_lt ssn_eq]
 
   def search(params)
-    build_tree(params)
-    execute_query
+    execute_query(build_tree(params))
   end
 
   private
 
+  # Each parameter becomes an operand in an N-ary conjunction.
   def build_tree(params)
-    params.each { |k, v| send(k, v) }
+    operands = params.map { |k, v| send("filter_#{k}", v) }
+    s(:and, *operands)
+  end
+
+  # Protect the dynamic `send` with a safelist.
+  def filter(k, v)
+    if FILTERS.include?(k)
+      send("filter_#{k}", v)
+    else
+      raise "Invalid filter: #{k}"
+    end
   end
 
   # Write one method like this for each filter on your search form.
-  def age_lt(v)
-    eq = ::AdvancedSearch::Nodes::Lt.new
-    eq.add_edge(::AdvancedSearch::Nodes::Id.new(:age))
-    eq.add_edge(::AdvancedSearch::Nodes::Value.new(v))
-    @head.add_edge(eq)
+  def filter_age_lt(v)
+    s(:lt,
+      s(:id, :age),
+      s(:value, v)
+    )
   end
 
-  def ssn_eq(v)
-    eq = ::AdvancedSearch::Nodes::Eq.new
-    eq.add_edge(::AdvancedSearch::Nodes::Id.new(:ssn))
-    eq.add_edge(::AdvancedSearch::Nodes::Value.new(v))
-    @head.add_edge(eq)
+  def filter_ssn_eq(v)
+    s(:eq,
+      s(:id, :ssn),
+      s(:value, v)
+    )
   end
 
   # Execute the query using your preferred adapter, in this case, ActiveRecord.
-  def execute_query
+  def execute_query(tree)
     ::AdvancedSearch::Adapters::ActiveRecord::Executor
       .new(
         # Use whatever "starting point" you like ..
         ::Employee.active,
         
         # .. the `Executor` will (in this case) use your AST for the `where` clause.
-        @head
+        tree
       )
       .execute
   end
