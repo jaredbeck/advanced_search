@@ -1,4 +1,5 @@
 require "bundler/setup"
+require "byebug"
 require "advanced_search"
 
 RSpec.configure do |config|
