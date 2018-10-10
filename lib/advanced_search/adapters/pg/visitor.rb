@@ -13,24 +13,38 @@ module AdvancedSearch
           Query.new(@sql.join(' '), @binds)
         end
 
-        def visit_and
-          @sql << 'and'
+        def visit_and(node)
+          node.edges.each_with_index do |child, i|
+            unless i.zero?
+              @sql << 'and'
+            end
+            child.accept(self)
+          end
         end
 
-        def visit_eq
+        def visit_eq(node)
+          node.edges[0].accept(self)
           @sql << '='
+          node.edges[1].accept(self)
         end
 
         def visit_id(node)
           @sql << node.id
         end
 
-        def visit_lt
+        def visit_lt(node)
+          node.edges[0].accept(self)
           @sql << '<'
+          node.edges[1].accept(self)
         end
 
-        def visit_or
-          @sql << 'or'
+        def visit_or(node)
+          node.edges.each_with_index do |child, i|
+            unless i.zero?
+              @sql << 'or'
+            end
+            child.accept(self)
+          end
         end
 
         def visit_value(node)

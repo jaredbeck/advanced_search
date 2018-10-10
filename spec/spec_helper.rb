@@ -15,3 +15,12 @@ RSpec.configure do |config|
 
   config.include AdvancedSearch::SExp::S
 end
+
+require "active_record"
+ActiveRecord::Base.establish_connection(
+  adapter: 'postgresql',
+  host: 'localhost',
+  database: 'advanced_search'
+)
+class Author < ActiveRecord::Base
+end

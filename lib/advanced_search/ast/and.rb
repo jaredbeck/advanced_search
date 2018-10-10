@@ -4,12 +4,7 @@ module AdvancedSearch
   module AST
     class And < Base
       def accept(visitor)
-        @edges.each_with_index do |node, i|
-          unless i.zero?
-            visitor.visit_and
-          end
-          node.accept(visitor)
-        end
+        visitor.visit_and(self)
       end
     end
   end

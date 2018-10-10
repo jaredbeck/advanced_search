@@ -4,9 +4,7 @@ module AdvancedSearch
   module AST
     class Eq < Base
       def accept(visitor)
-        @edges[0].accept(visitor)
-        visitor.visit_eq
-        @edges[1].accept(visitor)
+        visitor.visit_eq(self)
       end
     end
   end

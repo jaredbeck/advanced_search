@@ -21,6 +21,9 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency "byebug", "~> 10.0"
   spec.add_development_dependency "rspec", "~> 3.0"
 
+  # TODO: Move everything AR-related to a new gem, advanced_search-activerecord
+  spec.add_development_dependency "activerecord", "~> 5.2"
+
   # TODO: Move everything pg-related to a new gem, advanced_search-pg
   spec.add_development_dependency "pg", "~> 1.0"
 end

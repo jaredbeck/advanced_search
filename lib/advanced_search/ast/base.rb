@@ -5,6 +5,8 @@ module AdvancedSearch
         @edges = []
       end
 
+      attr_reader :edges
+
       def add_edge(other_node)
         unless other_node.is_a?(Base)
           raise(

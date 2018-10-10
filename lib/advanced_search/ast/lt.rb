@@ -4,9 +4,7 @@ module AdvancedSearch
   module AST
     class Lt < Base
       def accept(visitor)
-        @edges[0].accept(visitor)
-        visitor.visit_lt
-        @edges[1].accept(visitor)
+        visitor.visit_lt(self)
       end
     end
   end
