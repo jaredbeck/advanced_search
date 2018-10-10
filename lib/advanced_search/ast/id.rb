@@ -2,6 +2,7 @@ require "advanced_search/ast/base"
 
 module AdvancedSearch
   module AST
+    # Trusted. Do not construct an `Id` directly from user input.
     class Id < Base
       def initialize(id)
         @id = id

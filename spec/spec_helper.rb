@@ -24,3 +24,7 @@ ActiveRecord::Base.establish_connection(
 )
 class Author < ActiveRecord::Base
 end
+class Authorship < ActiveRecord::Base
+end
+class Book < ActiveRecord::Base
+end

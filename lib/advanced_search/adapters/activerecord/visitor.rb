@@ -3,6 +3,8 @@ module AdvancedSearch
     module ActiveRecord
       class Visitor
         E_BASE_QUERY_TYPE = 'Visitor expected base_query to be a Relation, got %s'
+        E_COMPARISON_LHS_TYPE = 'In comparison operations, left-hand side ' \
+          'must be an AST::Id, got %s'
 
         def initialize(base_query)
           unless base_query.is_a?(::ActiveRecord::Relation)
@@ -30,10 +32,16 @@ module AdvancedSearch
           node.id
         end
 
-        def visit_lt
-          left = node.edges[0].accept(self)
+        def visit_lt(node)
+          left_node = node.edges[0]
+          unless left_node.is_a?(AST::Id)
+            # Below, we trust (don't quote) the LHS, so it must be the `Id`.
+            # TODO: could we use an `::Arel::Attribute` instead of trusting?
+            raise ::TypeError, format(E_COMPARISON_LHS_TYPE, left_node.class.name)
+          end
+          left = left_node.accept(self)
           right = node.edges[1].accept(self)
-          @base_query.where('? < ?', left, right)
+          @base_query.where(format('%s < ?', left), right)
         end
 
         def visit_or(node)
