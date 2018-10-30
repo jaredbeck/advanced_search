@@ -4,7 +4,8 @@ module AdvancedSearch
   module Adapters
     module PG
       class Visitor
-        def initialize
+        def initialize(placeholder_style)
+          @placeholder_style = placeholder_style
           @sql = []
           @binds = []
         end
@@ -52,8 +53,21 @@ module AdvancedSearch
         end
 
         def visit_value(node)
-          @sql << format('$%d', @binds.length + 1)
+          @sql << placeholder(@binds.length + 1)
           @binds << node.value
+        end
+
+        private
+
+        def placeholder(ordinal_number)
+          case @placeholder_style
+          when :question_marks
+            '?'
+          when :dollars
+            format('$%d', ordinal_number)
+          else
+            raise 'Invalid placeholder style'
+          end
         end
       end
     end

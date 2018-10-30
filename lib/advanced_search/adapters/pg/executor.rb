@@ -12,7 +12,7 @@ module AdvancedSearch
         end
 
         def execute
-          visitor = Visitor.new
+          visitor = Visitor.new(:dollars)
           @ast.accept(visitor)
           query = visitor.result
           sql = [@base_query, query.body].join(' where ')
