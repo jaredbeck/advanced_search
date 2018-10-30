@@ -71,14 +71,14 @@ class PhonebookSearch
     )
   end
 
-  # Execute the query using your preferred adapter, in this case, ActiveRecord.
+  # Execute the query using your preferred adapter, in this case, the `pg` gem.
   def execute_query(tree)
-    ::AdvancedSearch::Adapters::ActiveRecord::Executor
+    ::AdvancedSearch::Adapters::PG::Executor
       .new(
-        # Use whatever "starting point" you like ..
-        ::Employee.active,
+        # You provide the select clause ..
+        'select * from employees',
         
-        # .. the `Executor` will (in this case) use your AST for the `where` clause.
+        # .. the `Executor` will build the `where` clause from your AST.
         tree
       )
       .execute
