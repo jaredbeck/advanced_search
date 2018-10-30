@@ -5,17 +5,22 @@ recommendations of [keepachangelog.com](http://keepachangelog.com/).
 
 ## Unreleased
 
-### Breaking Changes
+- Breaking Changes
+  - None
+- Added
+  - None
+- Fixed
+  - None
 
-- None
+## 0.0.2 (2018-10-30)
 
-### Added
-
-- None
-
-### Fixed
-
-- None
+- Breaking Changes
+  - Instead of an ActiveRecord adapter, just provide (and test) some examples
+    of using `find_by_sql`
+- Added
+  - None
+- Fixed
+  - None
 
 ## 0.0.1 (2018-10-03)
 
