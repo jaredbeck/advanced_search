@@ -14,12 +14,14 @@ module AdvancedSearch
         end
 
         def visit_and(node)
+          @sql << '('
           node.edges.each_with_index do |child, i|
             unless i.zero?
               @sql << 'and'
             end
             child.accept(self)
           end
+          @sql << ')'
         end
 
         def visit_eq(node)
@@ -39,12 +41,14 @@ module AdvancedSearch
         end
 
         def visit_or(node)
+          @sql << '('
           node.edges.each_with_index do |child, i|
             unless i.zero?
               @sql << 'or'
             end
             child.accept(self)
           end
+          @sql << ')'
         end
 
         def visit_value(node)
